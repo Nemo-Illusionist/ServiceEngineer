@@ -1,0 +1,168 @@
+﻿<local:NavigationAwarePage x:Class="ServInger.UI.Views.TestiPage"
+						   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						   xmlns:local="using:ServInger.UI.Controls"
+						   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+						   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+						   xmlns:mvvm="using:Prism.Windows.Mvvm"
+						   xmlns:converters="using:ServInger.UI.Controls"
+						   mvvm:ViewModelLocator.AutoWireViewModel="true"
+						   mc:Ignorable="d">
+
+	<Page.Resources>
+
+		<converters:FlagTaskCBConverter x:Key="FlagTaskCBConverter" />
+
+		<DataTemplate x:Key="SlidTemplate">
+			<Grid>
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<TextBlock Grid.Row="0"
+						   Margin="2 5"
+						   HorizontalAlignment="Left"
+						   Style="{StaticResource TextBlockStyle}"
+						   Foreground="{StaticResource MyYellow}"
+						   TextWrapping="Wrap"
+						   Text="{Binding Text}" />
+
+				<TextBox Grid.Row="1"
+						 Width="100"
+						 Style="{StaticResource TextBoxStyle}"
+						 HorizontalAlignment="Left"
+						 Margin="2 5 10 -5"
+						 Name="TBValue"
+						 Text="{Binding PresentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+				<Slider Grid.Row="2"
+						Margin="2 0"
+						Style="{StaticResource SliderStyle}"
+						Background="{StaticResource MyWhite}"
+						Minimum="{Binding MinValue}"
+						Maximum="{Binding MaxValue}"
+						Value="{Binding ElementName=TBValue, Path=Text, Mode=TwoWay}" />
+
+				<Grid Grid.Row="3"
+					  Margin="2 -15 2 5">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<TextBlock Grid.Column="0"
+							   Text="{Binding MinValue, Mode=OneWay}"
+							   HorizontalAlignment="Left"
+							   VerticalAlignment="Top" />
+					<TextBlock Grid.Column="1"
+							   Text="{Binding MaxValue, Mode=OneWay}"
+							   HorizontalAlignment="Right"
+							   VerticalAlignment="Top" />
+				</Grid>
+
+				<Line Grid.Row="4"
+					  Margin="2 5"
+					  Style="{StaticResource LineStyle}" />
+
+			</Grid>
+		</DataTemplate>
+
+		<DataTemplate x:Key="CheckTemplate">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<TextBlock Grid.Row="0"
+						   Margin="2 5"
+						   HorizontalAlignment="Stretch"
+						   Style="{StaticResource TextBlockStyle}"
+						   Foreground="{StaticResource MyYellow}"
+						   TextWrapping="Wrap"
+						   Text="{Binding Text}" />
+
+				<Grid Grid.Row="1"
+					  HorizontalAlignment="Stretch">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition  Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<TextBlock Grid.Column="0"
+							   Margin="2 5"
+							   Style="{StaticResource TextBlockStyle}"
+							   HorizontalAlignment="Left"
+							   Text="Норма" />
+
+					<ToggleSwitch Grid.Column="1"
+								  Style="{StaticResource ToggleSwitchStyle}"
+								  OffContent=""
+								  OnContent=""
+								  IsOn="{Binding PresentValue, Converter={StaticResource FlagTaskCBConverter}, Mode=TwoWay}" />
+				</Grid>
+
+
+				<Line Grid.Row="2"
+					  Margin="2 5"
+					  Style="{StaticResource LineStyle}" />
+
+			</Grid>
+		</DataTemplate>
+
+		<converters:ParameterDataTemplateSelector x:Key="parameterTemplateSelector"
+												  SlidTemplate="{StaticResource SlidTemplate}"
+												  CheckTemplate="{StaticResource CheckTemplate}" />
+
+	</Page.Resources>
+
+	<Grid Background="{ThemeResource MyBackground}">
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<TextBlock Grid.Row="0"
+				   Margin="12 12 12 5"
+				   Foreground="{StaticResource MyWhite}"
+				   FontSize="25"
+				   Text="ПОКАЗАНИЯ" />
+
+		<ListView Grid.Row="1"
+				  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+				  ItemsSource="{Binding Testimony, Mode=TwoWay}"
+				  ItemTemplateSelector="{StaticResource parameterTemplateSelector}"
+				  IsItemClickEnabled="False"
+				  ShowsScrollingPlaceholders="False"
+				  SelectionMode="None">
+		</ListView>
+
+	</Grid>
+
+	<local:NavigationAwarePage.BottomAppBar>
+		<CommandBar Foreground="Wheat"
+					Background="{StaticResource MyBlack}"
+					IsTabStop="False">
+
+			<AppBarButton IsCompact="True"
+						  Label="Фонарик"
+						  Command="{Binding FlashlightCommand}">
+				<AppBarButton.Icon>
+					<BitmapIcon UriSource="ms-appx:///Assets/light.png" />
+				</AppBarButton.Icon>
+			</AppBarButton>
+			<AppBarButton IsCompact="True"
+						  Label="Фото"
+						  Icon="Camera"
+						  Command="{Binding CameraCommand}" />
+		</CommandBar>
+	</local:NavigationAwarePage.BottomAppBar>
+
+</local:NavigationAwarePage>
